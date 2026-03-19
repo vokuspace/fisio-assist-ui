@@ -1,0 +1,110 @@
+/* Cabecera */
+.ficha-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid #e8eaf0;
+  background: #fff;
+}
+.avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: #EAF3DE; display: flex; align-items: center;
+  justify-content: center; font-weight: 700; font-size: 15px;
+  color: #3B6D11; border: 2px solid #97C459; flex-shrink: 0;
+}
+.name { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+.contact { font-size: 12px; color: #78909c; margin-top: 2px; }
+.spacer { flex: 1; }
+
+/* Acordeón interno */
+.ficha-accordion { display: block; margin: 8px 0; }
+
+.panel-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin-right: 8px;
+  color: #4caf50;
+  vertical-align: middle;
+}
+
+/* Paneles internos con la misma estética */
+.ficha-accordion ::ng-deep .mat-expansion-panel {
+  border: 1.5px solid #c8e6c9 !important;
+  border-radius: 8px !important;
+  margin: 6px 0 !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+}
+
+.ficha-accordion ::ng-deep .mat-expansion-panel-header {
+  background: linear-gradient(90deg, #e8f5e9 0%, #f1f8e9 100%) !important;
+  border-radius: 8px !important;
+  height: 48px !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+}
+
+.ficha-accordion ::ng-deep .mat-expansion-panel-header:hover {
+  background: linear-gradient(90deg, #c8e6c9 0%, #dcedc8 100%) !important;
+}
+
+.ficha-accordion ::ng-deep .mat-expansion-indicator {
+  width: 26px !important;
+  height: 26px !important;
+  background: #4caf50 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.ficha-accordion ::ng-deep .mat-expansion-indicator::after {
+  color: white !important;
+  border-width: 3px !important;
+  border-color: white !important;
+  transform: rotate(45deg) !important;
+}
+.ficha-accordion ::ng-deep .mat-expanded .mat-expansion-indicator::after {
+  transform: rotate(225deg) !important;
+}
+
+.ficha-accordion ::ng-deep .mat-expansion-panel-header-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #2e7d32 !important;
+  display: flex;
+  align-items: center;
+}
+
+/* Grid de datos clínicos */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 4px 0 8px;
+}
+.info-item {
+  background: #f8faf5;
+  border-radius: 8px;
+  padding: 10px 12px;
+  border: 1px solid #dcedc8;
+}
+.info-label { font-size: 11px; color: #78909c; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+.info-value { font-size: 14px; color: #1a1a1a; line-height: 1.4; }
+.info-value.danger { color: #c62828; font-weight: 600; }
+
+/* Botón nueva sesión */
+.btn-nueva-sesion { margin-top: 12px; }
+
+/* Formulario nueva sesión */
+.new-session-form {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: #f8faf5;
+  border-radius: 8px;
+  border: 1px solid #dcedc8;
+}
+.form-actions { display: flex; gap: 8px; margin-top: 4px; }

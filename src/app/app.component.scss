@@ -1,0 +1,32 @@
+.app-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  height: calc(100vh - 56px);
+  overflow: hidden;
+}
+.left-col {
+  background: white;
+  border-right: 1px solid var(--verde-borde);
+  padding: 16px;
+  overflow-y: auto;
+}
+.right-col {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  overflow: hidden;
+}
+.top-row {
+  overflow-y: auto;
+  border-bottom: 1px solid var(--verde-borde);
+  background: white;
+}
+.bottom-row {
+  background: var(--fondo);
+  display: flex;
+  flex-direction: column;
+}
+.toolbar-user {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-right: 12px;
+}

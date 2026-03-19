@@ -1,0 +1,336 @@
+/* ── Variables ────────────────────────────────────────────── */
+:host {
+  --sidebar-w: 72px;
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Topbar ───────────────────────────────────────────────── */
+.topbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 8px;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.title {
+  font-weight: 700;
+  font-size: 16px;
+  margin-left: 6px;
+  letter-spacing: -0.3px;
+}
+
+.title-sub {
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.65;
+  margin-left: 6px;
+  letter-spacing: 0.3px;
+  padding-top: 2px;
+}
+
+.spacer { flex: 1; }
+
+.toolbar-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 12px;
+}
+
+.user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+}
+
+.toolbar-user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.toolbar-nombre {
+  font-size: 13px;
+  opacity: 0.9;
+  color: white;
+}
+
+.toolbar-clinica {
+  font-size: 10px;
+  opacity: 0.6;
+  color: white;
+  letter-spacing: 0.2px;
+}
+
+.rol-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-left: 4px;
+}
+.rol-admin_clinica  { background: rgba(255,255,255,0.25); color: white; }
+.rol-fisioterapeuta { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.85); }
+.rol-recepcionista  { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.85); }
+
+.acceso-limitado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 24px;
+  color: #78909c;
+  text-align: center;
+}
+.acceso-limitado mat-icon { font-size: 40px; width: 40px; height: 40px; color: #b0bec5; }
+.acceso-limitado p { margin: 0; font-size: 14px; }
+
+.btn-logout {
+  color: white !important;
+  border: 1px solid rgba(255,255,255,0.35) !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  display: none; /* oculto en topbar; se muestra en sidebar */
+}
+
+/* ── Shell: sidebar + contenido ──────────────────────────── */
+.shell {
+  display: flex;
+  height: calc(100vh - 56px);
+}
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: #1b5e20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  gap: 4px;
+  flex-shrink: 0;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.12);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  padding: 0;
+}
+
+.nav-item mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  line-height: 1;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.nav-item.active {
+  background: rgba(255,255,255,0.18);
+  color: white;
+  box-shadow: inset 3px 0 0 #a5d6a7;
+}
+
+.sidebar-spacer { flex: 1; }
+
+.nav-item--logout {
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 4px;
+}
+
+.nav-item--logout:hover {
+  background: rgba(220,53,69,0.2);
+  color: #ef9a9a;
+}
+
+/* ── Área de contenido ────────────────────────────────────── */
+.content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Layout principal: buscador + ficha + chat ───────────── */
+.app-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  overflow: hidden;
+}
+
+.left-col {
+  border-right: 1px solid #e0e0e0;
+  padding: 8px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.right-col {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c8d8e8 transparent;
+}
+.right-col::-webkit-scrollbar { width: 5px; }
+.right-col::-webkit-scrollbar-thumb { background: #c8d8e8; border-radius: 4px; }
+
+.panels-accordion {
+  flex: 1;
+  display: block;
+}
+
+/* Estilos de los paneles del acordeón principal */
+.panels-accordion .panel-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin-right: 8px;
+  color: #4caf50;
+  vertical-align: middle;
+}
+
+/* Cabecera de panel: fondo verde suave, borde y cursor de mano */
+.panels-accordion ::ng-deep .mat-expansion-panel {
+  border: 1.5px solid #c8e6c9 !important;
+  border-radius: 10px !important;
+  margin: 8px 10px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07) !important;
+  overflow: hidden;
+}
+
+.panels-accordion ::ng-deep .mat-expansion-panel-header {
+  background: linear-gradient(90deg, #e8f5e9 0%, #f1f8e9 100%) !important;
+  border-radius: 10px !important;
+  height: 52px !important;
+  padding: 0 16px !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+}
+
+.panels-accordion ::ng-deep .mat-expansion-panel-header:hover {
+  background: linear-gradient(90deg, #c8e6c9 0%, #dcedc8 100%) !important;
+}
+
+/* Flecha del acordeón: más grande y más visible */
+.panels-accordion ::ng-deep .mat-expansion-indicator {
+  width: 28px !important;
+  height: 28px !important;
+  background: #4caf50 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.panels-accordion ::ng-deep .mat-expansion-indicator::after {
+  color: white !important;
+  border-width: 3px !important;
+  border-color: white !important;
+  transform: rotate(45deg) !important;
+}
+.panels-accordion ::ng-deep .mat-expanded .mat-expansion-indicator::after {
+  transform: rotate(225deg) !important;
+}
+
+/* Título del panel: más prominente */
+.panels-accordion ::ng-deep .mat-expansion-panel-header-title {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: #2e7d32 !important;
+  display: flex;
+  align-items: center;
+}
+
+/* Badge "Pulsa para expandir/contraer" */
+.panels-accordion ::ng-deep .mat-expansion-panel-header-description {
+  font-size: 11px !important;
+  color: #81c784 !important;
+  font-style: italic;
+}
+
+/* ── Estado vacío ─────────────────────────────────────────── */
+.empty-state {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px;
+  text-align: center;
+  color: #888;
+  user-select: none;
+}
+
+.empty-icon-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #EAF3DE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-icon {
+  font-size: 40px !important;
+  width: 40px !important;
+  height: 40px !important;
+  color: #639922;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #444;
+}
+
+.empty-desc {
+  font-size: 14px;
+  max-width: 320px;
+  margin: 0;
+  line-height: 1.6;
+}
