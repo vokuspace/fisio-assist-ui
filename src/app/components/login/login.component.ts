@@ -9,7 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
-import { PoliticaPrivacidadDialogComponent, AvisoLegalDialogComponent } from '../rgpd/rgpd.components';
+import { PoliticaPrivacidadDialogComponent, AvisoLegalDialogComponent } from '../gdpr/gdpr.components';
 
 @Component({
   selector: 'app-login',
@@ -80,11 +80,11 @@ import { PoliticaPrivacidadDialogComponent, AvisoLegalDialogComponent } from '..
           </form>
 
           <div class="registro-link">
-            <a routerLink="/olvide-password">¿Olvidaste tu contraseña?</a>
+            <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
           </div>
 
           <div class="registro-link">
-            ¿No tienes cuenta? <a routerLink="/registro">Crear nueva clínica</a>
+            ¿No tienes cuenta? <a routerLink="/register">Crear nueva clínica</a>
           </div>
 
           <div class="legal-footer">

@@ -10,7 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-registro',
+  selector: 'app-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule,
             MatFormFieldModule, MatInputModule, MatButtonModule,
@@ -43,16 +43,16 @@ import { AuthService } from '../../services/auth.service';
           <mat-form-field appearance="outline" class="field">
             <mat-label>Nombre de la clínica</mat-label>
             <mat-icon matPrefix>business</mat-icon>
-            <input matInput formControlName="nombre_clinica" placeholder="Ej: Clínica FisioSalud">
-            <mat-error *ngIf="form.get('nombre_clinica')?.hasError('required')">Campo obligatorio</mat-error>
+            <input matInput formControlName="clinic_name" placeholder="Ej: Clínica FisioSalud">
+            <mat-error *ngIf="form.get('clinic_name')?.hasError('required')">Campo obligatorio</mat-error>
           </mat-form-field>
 
           <p class="seccion-label">Administrador</p>
           <mat-form-field appearance="outline" class="field">
             <mat-label>Tu nombre</mat-label>
             <mat-icon matPrefix>person</mat-icon>
-            <input matInput formControlName="nombre_admin" placeholder="Ej: Carlos Martínez">
-            <mat-error *ngIf="form.get('nombre_admin')?.hasError('required')">Campo obligatorio</mat-error>
+            <input matInput formControlName="admin_name" placeholder="Ej: Carlos Martínez">
+            <mat-error *ngIf="form.get('admin_name')?.hasError('required')">Campo obligatorio</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="field">
@@ -179,10 +179,10 @@ export class RegistroComponent {
   error       = '';
 
   form = this.fb.group({
-    nombre_clinica: ['', Validators.required],
-    nombre_admin:   ['', Validators.required],
-    email:          ['', [Validators.required, Validators.email]],
-    password:       ['', [Validators.required, Validators.minLength(6)]]
+    clinic_name: ['', Validators.required],
+    admin_name:  ['', Validators.required],
+    email:       ['', [Validators.required, Validators.email]],
+    password:    ['', [Validators.required, Validators.minLength(6)]]
   });
 
   registrar(): void {

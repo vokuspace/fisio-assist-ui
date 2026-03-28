@@ -4,10 +4,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiService } from '../../services/api.service';
-import { Sesion } from '../../models/paciente.model';
+import { Sesion } from '../../models/patient.model';
 
 @Component({
-  selector: 'app-historial-sesiones',
+  selector: 'app-session-history',
   standalone: true,
   imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule],
   template: `
@@ -23,32 +23,32 @@ import { Sesion } from '../../models/paciente.model';
 
           <!-- Línea + punto de la timeline -->
           <div class="tl-left">
-            <div class="tl-dot" [ngClass]="getEvolucionClass(s.evolucion)"></div>
+            <div class="tl-dot" [ngClass]="getEvolucionClass(s.progress)"></div>
             <div class="tl-line" *ngIf="i < sesiones.length - 1"></div>
           </div>
 
           <!-- Contenido de la sesión -->
           <div class="tl-card">
             <div class="tl-card-header">
-              <span class="tl-fecha">{{ s.fecha }}</span>
-              <span class="evol-badge" [ngClass]="getEvolucionClass(s.evolucion)">
-                <mat-icon>{{ getEvolucionIcon(s.evolucion) }}</mat-icon>
-                {{ getEvolucionLabel(s.evolucion) }}
+              <span class="tl-fecha">{{ s.date }}</span>
+              <span class="evol-badge" [ngClass]="getEvolucionClass(s.progress)">
+                <mat-icon>{{ getEvolucionIcon(s.progress) }}</mat-icon>
+                {{ getEvolucionLabel(s.progress) }}
               </span>
             </div>
 
-            <div class="tl-notas" *ngIf="s.notas_sesion">
-              <strong>Notas:</strong> {{ s.notas_sesion }}
+            <div class="tl-notas" *ngIf="s.session_notes">
+              <strong>Notas:</strong> {{ s.session_notes }}
             </div>
-            <div class="tl-ejercicios" *ngIf="s.ejercicios_prescritos">
-              <strong>Ejercicios:</strong> {{ s.ejercicios_prescritos }}
+            <div class="tl-ejercicios" *ngIf="s.prescribed_exercises">
+              <strong>Ejercicios:</strong> {{ s.prescribed_exercises }}
             </div>
 
             <!-- Adjunto -->
             <div class="tl-adjunto">
-              <ng-container *ngIf="s.archivo_nombre; else sinArchivo">
+              <ng-container *ngIf="s.file_name; else sinArchivo">
                 <a [href]="getArchivoUrl(s.id!)" target="_blank" class="adjunto-link" matTooltip="Ver adjunto">
-                  <mat-icon>attach_file</mat-icon> {{ s.archivo_nombre }}
+                  <mat-icon>attach_file</mat-icon> {{ s.file_name }}
                 </a>
                 <button mat-icon-button class="btn-upload" (click)="triggerUpload(s.id!)" matTooltip="Cambiar archivo">
                   <mat-icon>upload</mat-icon>
@@ -227,17 +227,17 @@ export class HistorialSesionesComponent {
 
   // ── Helpers de evolución ───────────────────────────────────────────────────
 
-  getEvolucionClass(evolucion: string): string {
-    if (!evolucion) return 'neutro';
-    const v = evolucion.toLowerCase();
+  getEvolucionClass(progress: string): string {
+    if (!progress) return 'neutro';
+    const v = progress.toLowerCase();
     if (/mejora|progres|bien|buena|increment|consolid|óptim|optim/.test(v)) return 'mejora';
     if (/empeor|dolor|malo|regres|limitac|peor/.test(v)) return 'empeora';
     if (/estable|continu|moderado|ligero/.test(v)) return 'estable';
     return 'neutro';
   }
 
-  getEvolucionIcon(evolucion: string): string {
-    switch (this.getEvolucionClass(evolucion)) {
+  getEvolucionIcon(progress: string): string {
+    switch (this.getEvolucionClass(progress)) {
       case 'mejora':  return 'trending_up';
       case 'empeora': return 'trending_down';
       case 'estable': return 'trending_flat';
@@ -245,13 +245,13 @@ export class HistorialSesionesComponent {
     }
   }
 
-  getEvolucionLabel(evolucion: string): string {
-    if (!evolucion) return 'Sin registro';
-    switch (this.getEvolucionClass(evolucion)) {
+  getEvolucionLabel(progress: string): string {
+    if (!progress) return 'Sin registro';
+    switch (this.getEvolucionClass(progress)) {
       case 'mejora':  return 'Mejora';
       case 'empeora': return 'Empeora';
       case 'estable': return 'Estable';
-      default:        return evolucion.length > 20 ? evolucion.slice(0, 20) + '…' : evolucion;
+      default:        return progress.length > 20 ? progress.slice(0, 20) + '…' : progress;
     }
   }
 
@@ -275,7 +275,7 @@ export class HistorialSesionesComponent {
     this.api.subirArchivoSesion(this.activeSesionId, archivo).subscribe({
       next: (res) => {
         const s = this.sesiones.find((x: Sesion) => x.id === this.activeSesionId);
-        if (s) { s.archivo_nombre = res.archivo_nombre; }
+        if (s) { s.file_name = res.file_name; }
         this.activeSesionId = null;
         input.value = '';
         this.cdr.detectChanges();

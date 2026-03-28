@@ -212,11 +212,11 @@ export class AvisoLegalDialogComponent {}
 // ─── Banner de consentimiento RGPD ────────────────────────────────────────────
 
 @Component({
-  selector: 'app-rgpd-banner',
+  selector: 'app-gdpr-banner',
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule],
   template: `
-    <div class="rgpd-banner" *ngIf="visible">
+    <div class="gdpr-banner" *ngIf="visible">
       <div class="banner-body">
         <mat-icon class="banner-icon">shield</mat-icon>
         <div class="banner-text">
@@ -238,7 +238,7 @@ export class AvisoLegalDialogComponent {}
     </div>
   `,
   styles: [`
-    .rgpd-banner {
+    .gdpr-banner {
       position: fixed;
       bottom: 0;
       left: 0;
@@ -313,7 +313,7 @@ export class AvisoLegalDialogComponent {}
     }
 
     @media (max-width: 600px) {
-      .rgpd-banner { flex-direction: column; align-items: flex-start; }
+      .gdpr-banner { flex-direction: column; align-items: flex-start; }
     }
   `]
 })
@@ -322,11 +322,11 @@ export class RgpdBannerComponent {
   private dialog = inject(MatDialog);
 
   constructor() {
-    this.visible = localStorage.getItem('rgpd_aceptado') !== '1';
+    this.visible = localStorage.getItem('gdpr_accepted') !== '1';
   }
 
   aceptar(): void {
-    localStorage.setItem('rgpd_aceptado', '1');
+    localStorage.setItem('gdpr_accepted', '1');
     this.visible = false;
   }
 

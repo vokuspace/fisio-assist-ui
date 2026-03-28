@@ -11,7 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-olvide-password',
+  selector: 'app-forgot-password',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule,
             MatFormFieldModule, MatInputModule, MatButtonModule,
@@ -159,7 +159,7 @@ export class OlvidePasswordComponent {
     if (this.form.invalid) return;
     this.cargando = true;
     this.error    = '';
-    this.http.post(`${environment.apiUrl}/auth/solicitar-reset`, this.form.value).subscribe({
+    this.http.post(`${environment.apiUrl}/auth/request-reset`, this.form.value).subscribe({
       next: () => { this.enviado = true; this.cargando = false; this.cdr.detectChanges(); },
       error: () => { this.error = 'Error al enviar el correo. Inténtalo de nuevo.'; this.cargando = false; this.cdr.detectChanges(); }
     });

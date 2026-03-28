@@ -15,25 +15,25 @@ import { environment } from '../../../environments/environment';
 
 interface UsuarioItem {
   id: number;
-  nombre: string;
+  name: string;
   email: string;
-  rol: 'admin_clinica' | 'fisioterapeuta' | 'recepcionista';
+  role: 'clinic_admin' | 'physiotherapist' | 'receptionist';
 }
 
 const ROL_LABEL: Record<string, string> = {
-  admin_clinica:  'Administrador',
-  fisioterapeuta: 'Fisioterapeuta',
-  recepcionista:  'Recepcionista',
+  clinic_admin:    'Administrador',
+  physiotherapist: 'Fisioterapeuta',
+  receptionist:    'Recepcionista',
 };
 
 const ROL_COLOR: Record<string, string> = {
-  admin_clinica:  '#1b5e20',
-  fisioterapeuta: '#1565c0',
-  recepcionista:  '#6a1b9a',
+  clinic_admin:    '#1b5e20',
+  physiotherapist: '#1565c0',
+  receptionist:    '#6a1b9a',
 };
 
 @Component({
-  selector: 'app-gestion-usuarios',
+  selector: 'app-user-management',
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule,
@@ -68,25 +68,25 @@ const ROL_COLOR: Record<string, string> = {
 
       <table mat-table [dataSource]="usuarios" class="usuarios-table" *ngIf="!cargando">
 
-        <ng-container matColumnDef="nombre">
+        <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Usuario</th>
           <td mat-cell *matCellDef="let u">
             <div class="user-cell">
-              <div class="avatar" [style.background]="ROL_COLOR[u.rol]">{{ u.nombre.charAt(0) }}</div>
+              <div class="avatar" [style.background]="ROL_COLOR[u.role]">{{ u.name.charAt(0) }}</div>
               <div>
-                <div class="u-nombre">{{ u.nombre }}</div>
+                <div class="u-nombre">{{ u.name }}</div>
                 <div class="u-email">{{ u.email }}</div>
               </div>
             </div>
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="rol">
+        <ng-container matColumnDef="role">
           <th mat-header-cell *matHeaderCellDef>Rol</th>
           <td mat-cell *matCellDef="let u">
-            <span class="rol-chip" [style.background]="ROL_COLOR[u.rol] + '18'"
-                  [style.color]="ROL_COLOR[u.rol]" [style.border-color]="ROL_COLOR[u.rol] + '40'">
-              {{ ROL_LABEL[u.rol] }}
+            <span class="rol-chip" [style.background]="ROL_COLOR[u.role] + '18'"
+                  [style.color]="ROL_COLOR[u.role]" [style.border-color]="ROL_COLOR[u.role] + '40'">
+              {{ ROL_LABEL[u.role] }}
             </span>
           </td>
         </ng-container>
@@ -95,12 +95,12 @@ const ROL_COLOR: Record<string, string> = {
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let u">
             <div class="acciones">
-              <mat-select class="rol-select" [value]="u.rol"
+              <mat-select class="rol-select" [value]="u.role"
                 (selectionChange)="cambiarRol(u, $event.value)"
                 matTooltip="Cambiar rol">
-                <mat-option value="admin_clinica">Administrador</mat-option>
-                <mat-option value="fisioterapeuta">Fisioterapeuta</mat-option>
-                <mat-option value="recepcionista">Recepcionista</mat-option>
+                <mat-option value="physiotherapist">Fisioterapeuta</mat-option>
+                <mat-option value="receptionist">Recepcionista</mat-option>
+                <mat-option value="clinic_admin">Administrador</mat-option>
               </mat-select>
               <button mat-icon-button color="warn" (click)="eliminarUsuario(u)"
                 matTooltip="Eliminar usuario">
@@ -126,8 +126,8 @@ const ROL_COLOR: Record<string, string> = {
         <mat-form-field appearance="outline">
           <mat-label>Nombre</mat-label>
           <mat-icon matPrefix>person</mat-icon>
-          <input matInput formControlName="nombre" placeholder="Carlos Martínez">
-          <mat-error *ngIf="form.get('nombre')?.hasError('required')">Obligatorio</mat-error>
+          <input matInput formControlName="name" placeholder="Carlos Martínez">
+          <mat-error *ngIf="form.get('name')?.hasError('required')">Obligatorio</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -148,10 +148,10 @@ const ROL_COLOR: Record<string, string> = {
         <mat-form-field appearance="outline">
           <mat-label>Rol</mat-label>
           <mat-icon matPrefix>badge</mat-icon>
-          <mat-select formControlName="rol">
-            <mat-option value="fisioterapeuta">Fisioterapeuta</mat-option>
-            <mat-option value="recepcionista">Recepcionista</mat-option>
-            <mat-option value="admin_clinica">Administrador</mat-option>
+          <mat-select formControlName="role">
+            <mat-option value="physiotherapist">Fisioterapeuta</mat-option>
+            <mat-option value="receptionist">Recepcionista</mat-option>
+            <mat-option value="clinic_admin">Administrador</mat-option>
           </mat-select>
         </mat-form-field>
 
@@ -277,16 +277,16 @@ export class GestionUsuariosComponent implements OnInit {
   ROL_COLOR = ROL_COLOR;
 
   usuarios: UsuarioItem[] = [];
-  columnas  = ['nombre', 'rol', 'acciones'];
+  columnas  = ['name', 'role', 'acciones'];
   error     = '';
   cargando  = false;
   guardando = false;
 
   form = this.fb.group({
-    nombre:   ['', Validators.required],
+    name:     ['', Validators.required],
     email:    ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    rol:      ['fisioterapeuta', Validators.required]
+    role:     ['physiotherapist', Validators.required]
   });
 
   ngOnInit(): void { this.cargarUsuarios(); }
@@ -294,7 +294,7 @@ export class GestionUsuariosComponent implements OnInit {
   cargarUsuarios(): void {
     this.cargando = true;
     this.error = '';
-    this.http.get<UsuarioItem[]>(`${environment.apiUrl}/usuarios`).subscribe({
+    this.http.get<UsuarioItem[]>(`${environment.apiUrl}/users`).subscribe({
       next: data => { this.usuarios = data; this.cargando = false; this.cdr.detectChanges(); },
       error: err => {
         this.error = err.error?.error ?? 'Error al cargar usuarios. ¿Tienes permisos de administrador?';
@@ -308,10 +308,10 @@ export class GestionUsuariosComponent implements OnInit {
     if (this.form.invalid) return;
     this.guardando = true;
     this.error = '';
-    this.http.post<UsuarioItem>(`${environment.apiUrl}/usuarios`, this.form.value).subscribe({
+    this.http.post<UsuarioItem>(`${environment.apiUrl}/users`, this.form.value).subscribe({
       next: u => {
         this.usuarios = [...this.usuarios, u];
-        this.form.reset({ rol: 'fisioterapeuta' });
+        this.form.reset({ role: 'physiotherapist' });
         this.guardando = false;
       },
       error: err => {
@@ -322,15 +322,15 @@ export class GestionUsuariosComponent implements OnInit {
   }
 
   cambiarRol(u: UsuarioItem, nuevoRol: string): void {
-    this.http.put(`${environment.apiUrl}/usuarios/${u.id}/rol`, { rol: nuevoRol }).subscribe({
-      next: () => u.rol = nuevoRol as any,
+    this.http.put(`${environment.apiUrl}/users/${u.id}/role`, { role: nuevoRol }).subscribe({
+      next: () => u.role = nuevoRol as any,
       error: () => {}
     });
   }
 
   eliminarUsuario(u: UsuarioItem): void {
-    if (!confirm(`¿Eliminar a ${u.nombre}?`)) return;
-    this.http.delete(`${environment.apiUrl}/usuarios/${u.id}`).subscribe({
+    if (!confirm(`¿Eliminar a ${u.name}?`)) return;
+    this.http.delete(`${environment.apiUrl}/users/${u.id}`).subscribe({
       next: () => this.usuarios = this.usuarios.filter(x => x.id !== u.id),
       error: err => alert(err.error?.error ?? 'Error al eliminar')
     });

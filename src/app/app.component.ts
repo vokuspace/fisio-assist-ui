@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { BuscadorComponent } from './components/buscador/buscador.component';
-import { FichaPacienteComponent } from './components/ficha-paciente/ficha-paciente.component';
+import { SearchComponent } from './components/search/search.component';
+import { FichaPacienteComponent } from './components/patient-record/patient-record.component';
 import { ChatComponent } from './components/chat/chat.component';
-import { GestionPacientesComponent } from './components/gestion-pacientes/gestion-pacientes.component';
+import { GestionPacientesComponent } from './components/patient-management/patient-management.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { GestionUsuariosComponent } from './components/gestion-usuarios/gestion-usuarios.component';
+import { GestionUsuariosComponent } from './components/user-management/user-management.component';
 import { AgendaComponent } from './components/agenda/agenda.component';
 import { ApiService } from './services/api.service';
 import { AuthService } from './services/auth.service';
@@ -17,9 +17,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { CommonModule } from '@angular/common';
 
 const ROL_LABEL: Record<string, string> = {
-  admin_clinica:  'Admin',
-  fisioterapeuta: 'Fisioterapeuta',
-  recepcionista:  'Recepcionista',
+  clinic_admin:    'Admin',
+  physiotherapist: 'Fisioterapeuta',
+  receptionist:    'Recepcionista',
 };
 
 @Component({
@@ -27,7 +27,7 @@ const ROL_LABEL: Record<string, string> = {
   standalone: true,
   imports: [
     CommonModule,
-    BuscadorComponent, FichaPacienteComponent, ChatComponent, GestionPacientesComponent,
+    SearchComponent, FichaPacienteComponent, ChatComponent, GestionPacientesComponent,
     DashboardComponent, GestionUsuariosComponent, AgendaComponent,
     MatToolbarModule, MatIconModule, MatButtonModule, MatTooltipModule, MatExpansionModule
   ],
@@ -38,13 +38,13 @@ const ROL_LABEL: Record<string, string> = {
       <span class="title">FisioIA</span>
       <span class="title-sub">Asistente Clínico</span>
       <span class="spacer"></span>
-      <div class="toolbar-user" *ngIf="nombre">
-        <div class="user-avatar">{{ nombre.charAt(0) | uppercase }}</div>
+      <div class="toolbar-user" *ngIf="name">
+        <div class="user-avatar">{{ name.charAt(0) | uppercase }}</div>
         <div class="toolbar-user-info">
-          <span class="toolbar-nombre">{{ nombre }}</span>
-          <span class="toolbar-clinica" *ngIf="clinicaNombre">{{ clinicaNombre }}</span>
+          <span class="toolbar-nombre">{{ name }}</span>
+          <span class="toolbar-clinica" *ngIf="clinicName">{{ clinicName }}</span>
         </div>
-        <span class="rol-badge" [class]="'rol-' + rol">{{ rolLabel }}</span>
+        <span class="rol-badge" [class]="'rol-' + role">{{ rolLabel }}</span>
       </div>
       <button mat-button class="btn-logout" (click)="logout()">
         <mat-icon>logout</mat-icon> Cerrar sesión
@@ -115,7 +115,7 @@ const ROL_LABEL: Record<string, string> = {
         <!-- Vista principal: buscador + ficha + chat -->
         <div class="app-layout" *ngIf="vistaActual === 'principal'">
           <aside class="left-col">
-            <app-buscador (pacienteSeleccionado)="onPacienteSeleccionado($event)"></app-buscador>
+            <app-search (pacienteSeleccionado)="onPacienteSeleccionado($event)"></app-search>
           </aside>
           <section class="right-col">
 
@@ -140,7 +140,7 @@ const ROL_LABEL: Record<string, string> = {
                   </mat-panel-title>
                   <mat-panel-description>Pulsa para expandir / contraer</mat-panel-description>
                 </mat-expansion-panel-header>
-                <app-ficha-paciente [fichaCompleta]="fichaCompleta"></app-ficha-paciente>
+                <app-patient-record [fichaCompleta]="fichaCompleta"></app-patient-record>
               </mat-expansion-panel>
 
               <!-- Asistente IA: oculto para recepcionista -->
@@ -170,17 +170,17 @@ const ROL_LABEL: Record<string, string> = {
         <app-dashboard *ngIf="vistaActual === 'dashboard'"></app-dashboard>
 
         <!-- Vista gestión de pacientes -->
-        <app-gestion-pacientes
+        <app-patient-management
           *ngIf="vistaActual === 'gestion'"
           (cerrar)="setVista('principal')">
-        </app-gestion-pacientes>
+        </app-patient-management>
 
         <!-- Vista agenda de citas -->
         <app-agenda *ngIf="vistaActual === 'agenda'"></app-agenda>
 
         <!-- Vista gestión de usuarios (solo admin) -->
-        <app-gestion-usuarios *ngIf="vistaActual === 'usuarios' && isAdmin">
-        </app-gestion-usuarios>
+        <app-user-management *ngIf="vistaActual === 'usuarios' && isAdmin">
+        </app-user-management>
 
       </main>
     </div>
@@ -190,9 +190,9 @@ const ROL_LABEL: Record<string, string> = {
 export class AppComponent {
   fichaCompleta?: any;
   pacienteId: number | null = null;
-  nombre = '';
-  clinicaNombre = '';
-  rol = '';
+  name = '';
+  clinicName = '';
+  role = '';
   vistaActual: 'dashboard' | 'principal' | 'gestion' | 'agenda' | 'usuarios' = 'dashboard';
 
   private auth   = inject(AuthService);
@@ -203,12 +203,12 @@ export class AppComponent {
 
   get isAdmin():         boolean { return this.auth.isAdmin(); }
   get isRecepcionista(): boolean { return this.auth.isRecepcionista(); }
-  get rolLabel():        string  { return ROL_LABEL[this.rol] ?? this.rol; }
+  get rolLabel():        string  { return ROL_LABEL[this.role] ?? this.role; }
 
   ngOnInit(): void {
-    this.nombre       = this.auth.getNombre()       || '';
-    this.clinicaNombre = this.auth.getClinicaNombre() || '';
-    this.rol           = this.auth.getRol();
+    this.name      = this.auth.getNombre()       || '';
+    this.clinicName = this.auth.getClinicaNombre() || '';
+    this.role       = this.auth.getRol();
   }
 
   setVista(vista: 'dashboard' | 'principal' | 'gestion' | 'agenda' | 'usuarios'): void {
@@ -220,14 +220,14 @@ export class AppComponent {
     this.cdr.detectChanges();
     this.api.obtenerPaciente(id).subscribe((data: any) => {
       this.fichaCompleta = data;
-      this.nombre = this.auth.getNombre() || this.nombre;
+      this.name = this.auth.getNombre() || this.name;
       this.cdr.detectChanges();
     });
   }
 
   logout(): void {
     this.auth.logout();
-    this.nombre = '';
+    this.name = '';
     this.router.navigate(['/login']);
   }
 

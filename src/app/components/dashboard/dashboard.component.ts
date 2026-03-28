@@ -2,9 +2,14 @@ import { ChangeDetectorRef, Component, OnInit, AfterViewInit, ElementRef, ViewCh
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ApiService } from '../../services/api.service';
-import { Chart, registerables } from 'chart.js';
+import {
+  Chart,
+  LineController, LineElement, PointElement,
+  LinearScale, CategoryScale,
+  Filler, Tooltip
+} from 'chart.js';
 
-Chart.register(...registerables);
+Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip);
 
 @Component({
   selector: 'app-dashboard',
@@ -22,7 +27,7 @@ Chart.register(...registerables);
         <div class="metric-card card-blue">
           <mat-icon>people</mat-icon>
           <div class="metric-info">
-            <span class="metric-value">{{ metricas?.total_pacientes ?? '—' }}</span>
+            <span class="metric-value">{{ metricas?.total_patients ?? '—' }}</span>
             <span class="metric-label">Pacientes totales</span>
           </div>
         </div>
@@ -30,7 +35,7 @@ Chart.register(...registerables);
         <div class="metric-card card-green">
           <mat-icon>person_add</mat-icon>
           <div class="metric-info">
-            <span class="metric-value">{{ metricas?.altas_este_mes ?? '—' }}</span>
+            <span class="metric-value">{{ metricas?.new_patients_this_month ?? '—' }}</span>
             <span class="metric-label">Altas este mes</span>
           </div>
         </div>
@@ -38,7 +43,7 @@ Chart.register(...registerables);
         <div class="metric-card card-orange">
           <mat-icon>event_note</mat-icon>
           <div class="metric-info">
-            <span class="metric-value">{{ metricas?.sesiones_esta_semana ?? '—' }}</span>
+            <span class="metric-value">{{ metricas?.sessions_this_week ?? '—' }}</span>
             <span class="metric-label">Sesiones esta semana</span>
           </div>
         </div>
@@ -162,10 +167,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.api.getDashboard().subscribe({
       next: (data) => {
         this.metricas = data;
-        this.calcularCrecimiento(data.evolucion_mensual);
+        this.calcularCrecimiento(data.monthly_evolution);
         this.cdr.detectChanges();
         if (this.chartCanvas) {
-          this.dibujarGrafico(data.evolucion_mensual);
+          this.dibujarGrafico(data.monthly_evolution);
         }
       },
       error: () => { this.error = true; this.cdr.detectChanges(); }
@@ -173,8 +178,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (this.metricas?.evolucion_mensual) {
-      this.dibujarGrafico(this.metricas.evolucion_mensual);
+    if (this.metricas?.monthly_evolution) {
+      this.dibujarGrafico(this.metricas.monthly_evolution);
     }
   }
 
@@ -182,10 +187,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chart?.destroy();
   }
 
-  private calcularCrecimiento(evolucion: {mes: string, pacientes: number}[]): void {
+  private calcularCrecimiento(evolucion: {month: string, patients: number}[]): void {
     if (!evolucion || evolucion.length < 2) return;
-    const ultimo = evolucion[evolucion.length - 1].pacientes;
-    const penultimo = evolucion[evolucion.length - 2].pacientes;
+    const ultimo = evolucion[evolucion.length - 1].patients;
+    const penultimo = evolucion[evolucion.length - 2].patients;
     if (penultimo === 0) {
       this.crecimientoMes = ultimo > 0 ? '+' + ultimo : '0';
       return;
@@ -194,16 +199,16 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.crecimientoMes = (pct >= 0 ? '+' : '') + pct + '%';
   }
 
-  private dibujarGrafico(evolucion: {mes: string, pacientes: number}[]): void {
+  private dibujarGrafico(evolucion: {month: string, patients: number}[]): void {
     if (this.chart) { this.chart.destroy(); }
     const ctx = this.chartCanvas.nativeElement.getContext('2d')!;
     this.chart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: evolucion.map(e => e.mes),
+        labels: evolucion.map(e => e.month),
         datasets: [{
           label: 'Nuevos pacientes',
-          data: evolucion.map(e => e.pacientes),
+          data: evolucion.map(e => e.patients),
           borderColor: '#2979ff',
           backgroundColor: 'rgba(41,121,255,0.10)',
           borderWidth: 2.5,

@@ -32,7 +32,7 @@ import { environment } from '../../../environments/environment';
           <mat-icon class="error-state-icon">link_off</mat-icon>
           <h2 class="form-title">Enlace no válido</h2>
           <p class="form-sub">Este enlace de recuperación no es válido o ha expirado.</p>
-          <a routerLink="/olvide-password" class="btn-link">Solicitar un nuevo enlace</a>
+          <a routerLink="/forgot-password" class="btn-link">Solicitar un nuevo enlace</a>
         </div>
 
         <!-- Éxito -->

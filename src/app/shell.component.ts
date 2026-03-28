@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { RgpdBannerComponent } from './components/rgpd/rgpd.components';
+import { RgpdBannerComponent } from './components/gdpr/gdpr.components';
 
 @Component({
   selector: 'app-shell',
@@ -8,7 +8,7 @@ import { RgpdBannerComponent } from './components/rgpd/rgpd.components';
   imports: [RouterOutlet, RgpdBannerComponent],
   template: `
     <router-outlet></router-outlet>
-    <app-rgpd-banner></app-rgpd-banner>
+    <app-gdpr-banner></app-gdpr-banner>
   `
 })
 export class ShellComponent {}

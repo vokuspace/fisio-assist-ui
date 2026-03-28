@@ -22,16 +22,16 @@ import { ApiService } from '../../services/api.service';
     </mat-card-header>
     <mat-card-content class="messages" #scroll>
       <div *ngIf="!pacienteId" class="placeholder">Selecciona un paciente para chatear con el agente</div>
-      <div *ngFor="let m of messages" class="message" [ngClass]="{ 'fisio': m.rol === 'fisio', 'agente': m.rol === 'agente' }">
-        <div class="bubble" [innerHTML]="m.rol==='agente' ? formatMarkdown(m.texto) : m.texto"></div>
-        <div class="meta">{{ m.hora }} • {{ m.rol }}</div>
+      <div *ngFor="let m of messages" class="message" [ngClass]="{ 'fisio': m.role === 'physio', 'agente': m.role === 'agent' }">
+        <div class="bubble" [innerHTML]="m.role==='agent' ? formatMarkdown(m.text) : m.text"></div>
+        <div class="meta">{{ m.time }} • {{ m.role }}</div>
       </div>
     <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
     </mat-card-content>
     <mat-card-actions class="input-area">
       <form [formGroup]="form" (ngSubmit)="send()" class="inline-form" *ngIf="pacienteId">
         <mat-form-field appearance="fill" class="input-field">
-          <input matInput placeholder="Escribe un mensaje" formControlName="texto">
+          <input matInput placeholder="Escribe un mensaje" formControlName="text">
         </mat-form-field>
         <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Enviar</button>
       </form>
@@ -42,8 +42,8 @@ import { ApiService } from '../../services/api.service';
 })
 export class ChatComponent implements OnInit, OnChanges {
   @Input() pacienteId: number | null = null;
-  messages: { texto: string; hora: string; rol: 'fisio' | 'agente' }[] = [];
-  form = new FormGroup({ texto: new FormControl('') });
+  messages: { text: string; time: string; role: 'physio' | 'agent' }[] = [];
+  form = new FormGroup({ text: new FormControl('') });
   loading = false;
   @ViewChild('scroll') private scroll?: ElementRef;
   private cdr = inject(ChangeDetectorRef);
@@ -113,25 +113,25 @@ formatMarkdown(text: string): SafeHtml {
 
   private addAgentMessage(text: string): void {
     const now = new Date();
-    const hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    this.messages.push({ texto: text, hora, rol: 'agente' });
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    this.messages.push({ text, time, role: 'agent' });
     this.scrollToBottom();
   }
 
   send(): void {
     if (!this.pacienteId) return;
-    const texto = this.form.value.texto?.trim();
-    if (!texto) return;
+    const text = this.form.value.text?.trim();
+    if (!text) return;
     const now = new Date();
-    const hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    this.messages.push({ texto: texto, hora, rol: 'fisio' });
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    this.messages.push({ text, time, role: 'physio' });
     this.form.reset();
     this.loading = true;
-    this.api.enviarMensaje(this.pacienteId, texto).subscribe(res => {
+    this.api.enviarMensaje(this.pacienteId, text).subscribe(res => {
       this.loading = false;
-      const respuesta = res.respuesta;
-      const hora2 = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      this.messages.push({ texto: respuesta, hora: hora2, rol: 'agente' });
+      const response = res.response;
+      const time2 = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      this.messages.push({ text: response, time: time2, role: 'agent' });
       this.scrollToBottom();
       this.cdr.detectChanges();
     }, () => this.loading = false);

@@ -17,27 +17,27 @@ export class AuthService {
     return this.http.post<any>(`${this.baseUrl}/auth/login`, { email, password })
       .pipe(tap(res => {
         if (this.isBrowser()) {
-          localStorage.setItem('token',          res.token);
-          localStorage.setItem('nombre',         res.nombre);
-          localStorage.setItem('clinica_id',     String(res.clinica_id ?? ''));
-          localStorage.setItem('clinica_nombre', res.clinica_nombre ?? '');
-          localStorage.setItem('rol',            res.rol ?? 'fisioterapeuta');
+          localStorage.setItem('token',       res.token);
+          localStorage.setItem('name',        res.name);
+          localStorage.setItem('clinic_id',   String(res.clinic_id ?? ''));
+          localStorage.setItem('clinic_name', res.clinic_name ?? '');
+          localStorage.setItem('role',        res.role ?? 'physiotherapist');
         }
       }));
   }
 
   registrarClinica(datos: {
-    nombre_clinica: string; email: string;
-    password: string; nombre_admin: string;
+    clinic_name: string; email: string;
+    password: string; admin_name: string;
   }): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/auth/registro-clinica`, datos)
+    return this.http.post<any>(`${this.baseUrl}/auth/register-clinic`, datos)
       .pipe(tap(res => {
         if (this.isBrowser()) {
-          localStorage.setItem('token',          res.token);
-          localStorage.setItem('nombre',         res.nombre);
-          localStorage.setItem('clinica_id',     String(res.clinica_id ?? ''));
-          localStorage.setItem('clinica_nombre', res.clinica_nombre ?? '');
-          localStorage.setItem('rol',            res.rol ?? 'admin_clinica');
+          localStorage.setItem('token',       res.token);
+          localStorage.setItem('name',        res.name);
+          localStorage.setItem('clinic_id',   String(res.clinic_id ?? ''));
+          localStorage.setItem('clinic_name', res.clinic_name ?? '');
+          localStorage.setItem('role',        res.role ?? 'clinic_admin');
         }
       }));
   }
@@ -45,23 +45,23 @@ export class AuthService {
   logout(): void {
     if (this.isBrowser()) {
       localStorage.removeItem('token');
-      localStorage.removeItem('nombre');
-      localStorage.removeItem('clinica_id');
-      localStorage.removeItem('clinica_nombre');
-      localStorage.removeItem('rol');
+      localStorage.removeItem('name');
+      localStorage.removeItem('clinic_id');
+      localStorage.removeItem('clinic_name');
+      localStorage.removeItem('role');
     }
   }
 
-  getToken():         string | null { return this.isBrowser() ? localStorage.getItem('token')          : null; }
-  isLoggedIn():       boolean       { return !!this.getToken(); }
-  getNombre():        string | null { return this.isBrowser() ? localStorage.getItem('nombre')         : null; }
-  getClinicaNombre(): string | null { return this.isBrowser() ? localStorage.getItem('clinica_nombre') : null; }
-  getRol():           string        { return (this.isBrowser() ? localStorage.getItem('rol') : null) ?? 'fisioterapeuta'; }
-  isAdmin():          boolean       { return this.getRol() === 'admin_clinica'; }
-  isRecepcionista():  boolean       { return this.getRol() === 'recepcionista'; }
+  getToken():        string | null { return this.isBrowser() ? localStorage.getItem('token')       : null; }
+  isLoggedIn():      boolean       { return !!this.getToken(); }
+  getNombre():       string | null { return this.isBrowser() ? localStorage.getItem('name')        : null; }
+  getClinicaNombre():string | null { return this.isBrowser() ? localStorage.getItem('clinic_name') : null; }
+  getRol():          string        { return (this.isBrowser() ? localStorage.getItem('role') : null) ?? 'physiotherapist'; }
+  isAdmin():         boolean       { return this.getRol() === 'clinic_admin'; }
+  isRecepcionista(): boolean       { return this.getRol() === 'receptionist'; }
 
   getClinicaId(): number | null {
-    const v = this.isBrowser() ? localStorage.getItem('clinica_id') : null;
+    const v = this.isBrowser() ? localStorage.getItem('clinic_id') : null;
     return v ? Number(v) : null;
   }
 }

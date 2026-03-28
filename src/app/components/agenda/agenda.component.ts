@@ -49,21 +49,21 @@ export interface CitaDialogData {
         <mat-form-field appearance="outline" class="field-full">
           <mat-label>Fecha</mat-label>
           <mat-icon matPrefix>calendar_today</mat-icon>
-          <input matInput type="date" formControlName="fecha">
+          <input matInput type="date" formControlName="date">
           <mat-error>Obligatorio</mat-error>
         </mat-form-field>
 
         <div class="row-2">
           <mat-form-field appearance="outline">
             <mat-label>Hora inicio</mat-label>
-            <mat-select formControlName="hora_inicio">
+            <mat-select formControlName="start_time">
               <mat-option *ngFor="let h of HORAS" [value]="h">{{ h }}</mat-option>
             </mat-select>
             <mat-error>Obligatorio</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Hora fin</mat-label>
-            <mat-select formControlName="hora_fin">
+            <mat-select formControlName="end_time">
               <mat-option *ngFor="let h of HORAS" [value]="h">{{ h }}</mat-option>
             </mat-select>
             <mat-error>Obligatorio</mat-error>
@@ -80,7 +80,7 @@ export interface CitaDialogData {
             [displayWith]="displayPaciente"
             (optionSelected)="onPacienteSelected($event)">
             <mat-option *ngFor="let p of pacientesResultados" [value]="p">
-              {{ p.nombre }} {{ p.apellidos }}
+              {{ p.name }} {{ p.last_name }}
             </mat-option>
             <mat-option *ngIf="buscandoPaciente" disabled>
               <span style="color:#999;font-size:13px">Buscando...</span>
@@ -91,10 +91,10 @@ export interface CitaDialogData {
         <mat-form-field appearance="outline" class="field-full">
           <mat-label>Fisioterapeuta</mat-label>
           <mat-icon matPrefix>badge</mat-icon>
-          <mat-select formControlName="fisioterapeuta_id">
+          <mat-select formControlName="physiotherapist_id">
             <mat-option [value]="null">Sin asignar</mat-option>
             <mat-option *ngFor="let f of data.fisioterapeutas" [value]="f.id">
-              {{ f.nombre }}
+              {{ f.name }}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -102,22 +102,22 @@ export interface CitaDialogData {
         <mat-form-field appearance="outline" class="field-full">
           <mat-label>Motivo</mat-label>
           <mat-icon matPrefix>medical_services</mat-icon>
-          <input matInput formControlName="motivo" placeholder="Motivo de la cita">
+          <input matInput formControlName="reason" placeholder="Motivo de la cita">
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="field-full">
           <mat-label>Estado</mat-label>
-          <mat-select formControlName="estado">
-            <mat-option value="pendiente">🔵 Pendiente</mat-option>
-            <mat-option value="confirmada">🟢 Confirmada</mat-option>
-            <mat-option value="cancelada">🔴 Cancelada</mat-option>
-            <mat-option value="completada">🟣 Completada</mat-option>
+          <mat-select formControlName="status">
+            <mat-option value="pending">🔵 Pendiente</mat-option>
+            <mat-option value="confirmed">🟢 Confirmada</mat-option>
+            <mat-option value="cancelled">🔴 Cancelada</mat-option>
+            <mat-option value="completed">🟣 Completada</mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="field-full">
           <mat-label>Notas</mat-label>
-          <textarea matInput formControlName="notas" rows="2"
+          <textarea matInput formControlName="notes" rows="2"
             placeholder="Notas adicionales..."></textarea>
         </mat-form-field>
 
@@ -186,44 +186,44 @@ export class CitaDialogComponent implements OnInit {
   error               = '';
 
   form = this.fb.group({
-    fecha:             ['', Validators.required],
-    hora_inicio:       ['', Validators.required],
-    hora_fin:          ['', Validators.required],
-    paciente_id:       [null as number | null],
-    fisioterapeuta_id: [null as number | null],
-    motivo:            [''],
-    estado:            ['pendiente', Validators.required],
-    notas:             [''],
+    date:                ['', Validators.required],
+    start_time:          ['', Validators.required],
+    end_time:            ['', Validators.required],
+    patient_id:          [null as number | null],
+    physiotherapist_id:  [null as number | null],
+    reason:              [''],
+    status:              ['pending', Validators.required],
+    notes:               [''],
   });
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: CitaDialogData) {}
 
   ngOnInit(): void {
     if (this.data.fecha) {
-      this.form.patchValue({ fecha: this.data.fecha });
+      this.form.patchValue({ date: this.data.fecha });
     }
     if (this.data.hora != null) {
       const h  = String(this.data.hora).padStart(2, '0');
       const h1 = String(this.data.hora + 1).padStart(2, '0');
       this.form.patchValue({
-        hora_inicio: `${h}:00`,
-        hora_fin:    this.data.hora < 20 ? `${h1}:00` : `${h}:30`,
+        start_time: `${h}:00`,
+        end_time:   this.data.hora < 20 ? `${h1}:00` : `${h}:30`,
       });
     }
     if (this.data.cita) {
       const c = this.data.cita;
       this.form.patchValue({
-        fecha:             c.fecha,
-        hora_inicio:       c.hora_inicio,
-        hora_fin:          c.hora_fin,
-        paciente_id:       c.paciente_id,
-        fisioterapeuta_id: c.fisioterapeuta_id,
-        motivo:            c.motivo  ?? '',
-        estado:            c.estado  ?? 'pendiente',
-        notas:             c.notas   ?? '',
+        date:               c.date,
+        start_time:         c.start_time,
+        end_time:           c.end_time,
+        patient_id:         c.patient_id,
+        physiotherapist_id: c.physiotherapist_id,
+        reason:             c.reason  ?? '',
+        status:             c.status  ?? 'pending',
+        notes:              c.notes   ?? '',
       });
-      if (c.paciente_nombre) {
-        this.pacienteCtrl.setValue(c.paciente_nombre);
+      if (c.patient_name) {
+        this.pacienteCtrl.setValue(c.patient_name);
       }
     }
 
@@ -235,7 +235,7 @@ export class CitaDialogComponent implements OnInit {
 
   buscarPacientes(q: string): void {
     this.buscandoPaciente = true;
-    this.http.get<any[]>(`${environment.apiUrl}/pacientes?nombre=${encodeURIComponent(q)}`).subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/patients?name=${encodeURIComponent(q)}`).subscribe({
       next: r => { this.pacientesResultados = r; this.buscandoPaciente = false; this.cdr.detectChanges(); },
       error: () => { this.buscandoPaciente = false; }
     });
@@ -244,12 +244,12 @@ export class CitaDialogComponent implements OnInit {
   displayPaciente(p: any): string {
     if (!p) return '';
     if (typeof p === 'string') return p;
-    return `${p.nombre} ${p.apellidos || ''}`.trim();
+    return `${p.name} ${p.last_name || ''}`.trim();
   }
 
   onPacienteSelected(event: MatAutocompleteSelectedEvent): void {
     const p = event.option.value;
-    this.form.patchValue({ paciente_id: p.id });
+    this.form.patchValue({ patient_id: p.id });
   }
 
   guardar(): void {
@@ -258,8 +258,8 @@ export class CitaDialogComponent implements OnInit {
     this.error = '';
     const payload = { ...this.form.value };
     const url = this.data.cita
-      ? `${environment.apiUrl}/citas/${this.data.cita.id}`
-      : `${environment.apiUrl}/citas`;
+      ? `${environment.apiUrl}/appointments/${this.data.cita.id}`
+      : `${environment.apiUrl}/appointments`;
     const obs = this.data.cita
       ? this.http.put(url, payload)
       : this.http.post(url, payload);
@@ -274,7 +274,7 @@ export class CitaDialogComponent implements OnInit {
   }
 
   eliminar(): void {
-    this.http.delete(`${environment.apiUrl}/citas/${this.data.cita.id}`).subscribe({
+    this.http.delete(`${environment.apiUrl}/appointments/${this.data.cita.id}`).subscribe({
       next:  () => this.dialogRef.close({ recargar: true }),
       error: () => { this.error = 'Error al eliminar la cita'; this.cdr.detectChanges(); }
     });
@@ -313,7 +313,7 @@ export class CitaDialogComponent implements OnInit {
               (selectionChange)="filtroFisio = $event.value; cargarCitas()">
               <mat-option [value]="null">Todos</mat-option>
               <mat-option *ngFor="let f of fisioterapeutas" [value]="f.id">
-                {{ f.nombre }}
+                {{ f.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -354,12 +354,12 @@ export class CitaDialogComponent implements OnInit {
               [matTooltip]="'Crear cita el ' + formatDateDisplay(dia) + ' a las ' + hora + ':00'"
               matTooltipShowDelay="600">
               <div *ngFor="let cita of getCitasSlot(dia, hora)"
-                class="cita-card cita-{{ cita.estado }}"
+                class="cita-card cita-{{ cita.status }}"
                 (click)="abrirEditar(cita, $event)"
-                [matTooltip]="(cita.paciente_nombre || 'Sin paciente') + ' · ' + cita.hora_inicio + '–' + cita.hora_fin + (cita.motivo ? ' · ' + cita.motivo : '')">
-                <span class="cita-hora">{{ cita.hora_inicio }}–{{ cita.hora_fin }}</span>
-                <span class="cita-nombre">{{ cita.paciente_nombre || cita.motivo || 'Cita' }}</span>
-                <span class="cita-fisio" *ngIf="cita.fisioterapeuta_nombre">{{ cita.fisioterapeuta_nombre }}</span>
+                [matTooltip]="(cita.patient_name || 'Sin paciente') + ' · ' + cita.start_time + '–' + cita.end_time + (cita.reason ? ' · ' + cita.reason : '')">
+                <span class="cita-hora">{{ cita.start_time }}–{{ cita.end_time }}</span>
+                <span class="cita-nombre">{{ cita.patient_name || cita.reason || 'Cita' }}</span>
+                <span class="cita-fisio" *ngIf="cita.physiotherapist_name">{{ cita.physiotherapist_name }}</span>
               </div>
             </div>
           </ng-container>
@@ -399,6 +399,11 @@ export class CitaDialogComponent implements OnInit {
     .ley-confirmada { background: #e8f5e9; color: #2e7d32; border-left: 3px solid #388e3c; }
     .ley-cancelada  { background: #fce4ec; color: #b71c1c; border-left: 3px solid #c62828; }
     .ley-completada { background: #ede7f6; color: #6a1b9a; border-left: 3px solid #7b1fa2; }
+
+    .cita-pending   { background: #e3f2fd; border-left: 3px solid #1976d2; }
+    .cita-confirmed { background: #e8f5e9; border-left: 3px solid #388e3c; }
+    .cita-cancelled { background: #fce4ec; border-left: 3px solid #c62828; opacity: 0.65; }
+    .cita-completed { background: #ede7f6; border-left: 3px solid #7b1fa2; }
 
     /* ── Loading ── */
     .loading-wrap {
@@ -526,7 +531,7 @@ export class AgendaComponent implements OnInit {
   }
 
   cargarFisioterapeutas(): void {
-    this.http.get<any[]>(`${environment.apiUrl}/miembros`).subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/users`).subscribe({
       next: r => { this.fisioterapeutas = r; this.cdr.detectChanges(); },
       error: () => {}
     });
@@ -536,8 +541,8 @@ export class AgendaComponent implements OnInit {
     this.cargando = true;
     this.cdr.detectChanges();
     const dias = this.diasSemana;
-    let url = `${environment.apiUrl}/citas?fecha_inicio=${this.fmt(dias[0])}&fecha_fin=${this.fmt(dias[6])}`;
-    if (this.filtroFisio) url += `&fisioterapeuta_id=${this.filtroFisio}`;
+    let url = `${environment.apiUrl}/appointments?start_date=${this.fmt(dias[0])}&end_date=${this.fmt(dias[6])}`;
+    if (this.filtroFisio) url += `&physiotherapist_id=${this.filtroFisio}`;
     this.http.get<any[]>(url).subscribe({
       next:  r => { this.citas = r; this.cargando = false; this.cdr.detectChanges(); },
       error: () => { this.cargando = false; this.cdr.detectChanges(); }
@@ -580,7 +585,7 @@ export class AgendaComponent implements OnInit {
   getCitasSlot(dia: Date, hora: number): any[] {
     const fechaStr = this.fmt(dia);
     return this.citas.filter(c =>
-      c.fecha === fechaStr && parseInt(c.hora_inicio.split(':')[0], 10) === hora
+      c.date === fechaStr && parseInt(c.start_time.split(':')[0], 10) === hora
     );
   }
 

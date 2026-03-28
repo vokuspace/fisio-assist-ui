@@ -6,12 +6,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Paciente } from '../../models/paciente.model';
+import { Paciente } from '../../models/patient.model';
 import { ApiService } from '../../services/api.service';
 
 
 @Component({
-  selector: 'app-buscador',
+  selector: 'app-search',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatListModule, MatProgressSpinnerModule],
   template: `
@@ -28,7 +28,7 @@ import { ApiService } from '../../services/api.service';
 
     <mat-list *ngIf="!loading && resultados.length > 0">
       <mat-list-item *ngFor="let p of resultados" (click)="seleccionar(p)" style="cursor: pointer">
-        {{ p.nombre }} {{ p.apellidos }}
+        {{ p.name }} {{ p.last_name }}
       </mat-list-item>
     </mat-list>
 
@@ -37,9 +37,9 @@ import { ApiService } from '../../services/api.service';
     </div>
   </div>
   `,
-  styleUrls: ['./buscador.component.css']
+  styleUrls: ['./search.component.css']
 })
-export class BuscadorComponent {
+export class SearchComponent {
   searchControl = new FormControl('');
   resultados: Paciente[] = [];
   loading = false;
@@ -51,14 +51,14 @@ export class BuscadorComponent {
   constructor(private api: ApiService = inject(ApiService)) {}
 
 onBuscar(): void {
-  const nombre = this.searchControl.value?.toString().trim() ?? '';
+  const query = this.searchControl.value?.toString().trim() ?? '';
   this.searched = true;
-  if (!nombre) {
+  if (!query) {
     this.resultados = [];
     return;
   }
   this.loading = true;
-  this.api.buscarPacientes(nombre).subscribe(
+  this.api.buscarPacientes(query).subscribe(
     res => {
       this.resultados = res;
       this.loading = false;

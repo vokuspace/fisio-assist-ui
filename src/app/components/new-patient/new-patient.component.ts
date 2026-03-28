@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from '../../services/api.service';
 
 @Component({
-  selector: 'app-nuevo-paciente',
+  selector: 'app-new-patient',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatNativeDateModule, MatButtonModule],
   template: `
@@ -21,21 +21,21 @@ import { ApiService } from '../../services/api.service';
       <form [formGroup]="form" (ngSubmit)="guardar()">
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Nombre</mat-label>
-          <input matInput formControlName="nombre" />
+          <input matInput formControlName="name" />
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Apellidos</mat-label>
-          <input matInput formControlName="apellidos" />
+          <input matInput formControlName="last_name" />
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Fecha de nacimiento</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="fecha_nacimiento" type="date" />
+          <input matInput [matDatepicker]="picker" formControlName="birth_date" type="date" />
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Teléfono</mat-label>
-          <input matInput formControlName="telefono" />
+          <input matInput formControlName="phone" />
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Email</mat-label>
@@ -43,23 +43,23 @@ import { ApiService } from '../../services/api.service';
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Diagnóstico</mat-label>
-          <input matInput formControlName="diagnostico" />
+          <input matInput formControlName="diagnosis_text" />
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Patología</mat-label>
-          <input matInput formControlName="patologia" />
+          <input matInput formControlName="pathology" />
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Medicacion</mat-label>
-          <input matInput formControlName="medicacion" />
+          <input matInput formControlName="medication" />
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Contraindicaciones</mat-label>
-          <input matInput formControlName="contraindicaciones" />
+          <input matInput formControlName="contraindications" />
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Observaciones</mat-label>
-          <textarea matInput formControlName="observaciones"></textarea>
+          <textarea matInput formControlName="observations"></textarea>
         </mat-form-field>
         <div class="actions">
           <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Guardar paciente</button>
@@ -76,16 +76,16 @@ export class NuevoPacienteComponent {
   form: FormGroup;
   constructor(private api: ApiService = inject(ApiService), private fb: FormBuilder) {
     this.form = this.fb.group({
-      nombre: ['', Validators.required],
-      apellidos: ['', Validators.required],
-      fecha_nacimiento: ['', Validators.required],
-      telefono: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      diagnostico: ['', Validators.required],
-      patologia: [''],
-      medicacion: [''],
-      contraindicaciones: [''],
-      observaciones: ['']
+      name:             ['', Validators.required],
+      last_name:        ['', Validators.required],
+      birth_date:       ['', Validators.required],
+      phone:            ['', Validators.required],
+      email:            ['', [Validators.required, Validators.email]],
+      diagnosis_text:   ['', Validators.required],
+      pathology:        [''],
+      medication:       [''],
+      contraindications:[''],
+      observations:     ['']
     });
   }
   toggleForm(): void {
@@ -93,19 +93,18 @@ export class NuevoPacienteComponent {
   }
   guardar(): void {
     if (this.form.invalid) return;
-    const datosPaciente = this.form.value;
-    this.api.crearPaciente(datosPaciente).subscribe((p: any) => {
+    const data = this.form.value;
+    this.api.crearPaciente(data).subscribe((p: any) => {
       const id = p?.id;
-      const ficha = {
-        paciente_id: id,
-        diagnostico: datosPaciente.diagnostico,
-        patologia: datosPaciente.patologia,
-        medicacion: datosPaciente.medicacion,
-        contraindicaciones: datosPaciente.contraindicaciones,
-        observaciones: datosPaciente.observaciones
+      const record = {
+        patient_id:        id,
+        diagnosis_text:    data.diagnosis_text,
+        pathology:         data.pathology,
+        medication:        data.medication,
+        contraindications: data.contraindications,
+        observations:      data.observations
       };
-      // Llamar a crear ficha si la API la expone; se asume ruta /api/ficha
-      this.api.crearFicha ? (this.api.crearFicha(ficha).subscribe(() => {})) : Promise.resolve();
+      this.api.crearFicha ? (this.api.crearFicha(record).subscribe(() => {})) : Promise.resolve();
       this.pacienteCreado.emit(id);
       this.showForm = false;
       this.form.reset();

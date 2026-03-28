@@ -1,21 +1,16 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { AppComponent } from './app.component';
-import { LoginComponent } from './components/login/login.component';
-import { RegistroComponent } from './components/registro/registro.component';
-import { OlvidePasswordComponent } from './components/olvide-password/olvide-password.component';
-import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { authGuard } from './guards/auth.guard';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 const routes = [
-  { path: '', canActivate: [authGuard], component: AppComponent as any },
-  { path: 'login', component: LoginComponent },
-  { path: 'registro',          component: RegistroComponent },
-  { path: 'olvide-password',   component: OlvidePasswordComponent },
-  { path: 'reset-password',    component: ResetPasswordComponent },
+  { path: '', canActivate: [authGuard], loadComponent: () => import('./app.component').then(m => m.AppComponent) },
+  { path: 'login', loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent) },
+  { path: 'register', loadComponent: () => import('./components/register/register.component').then(m => m.RegistroComponent) },
+  { path: 'forgot-password', loadComponent: () => import('./components/forgot-password/forgot-password.component').then(m => m.OlvidePasswordComponent) },
+  { path: 'reset-password', loadComponent: () => import('./components/reset-password/reset-password.component').then(m => m.ResetPasswordComponent) },
   { path: '**', redirectTo: '' }
 ];
 

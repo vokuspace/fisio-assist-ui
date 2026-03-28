@@ -17,12 +17,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableDataSource } from '@angular/material/table';
 import { ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { PoliticaPrivacidadDialogComponent } from '../rgpd/rgpd.components';
+import { PoliticaPrivacidadDialogComponent } from '../gdpr/gdpr.components';
 
 // ─── Dialog: Nuevo Paciente ────────────────────────────────────────────────────
 
 @Component({
-  selector: 'app-nuevo-paciente-dialog',
+  selector: 'app-new-patient-dialog',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule,
             MatButtonModule, MatIconModule, MatDialogModule, MatSelectModule, MatCheckboxModule],
@@ -36,17 +36,17 @@ import { PoliticaPrivacidadDialogComponent } from '../rgpd/rgpd.components';
       <div class="form-row">
         <mat-form-field appearance="outline" class="half">
           <mat-label>Nombre *</mat-label>
-          <input matInput formControlName="nombre">
+          <input matInput formControlName="name">
         </mat-form-field>
         <mat-form-field appearance="outline" class="half">
           <mat-label>Apellidos</mat-label>
-          <input matInput formControlName="apellidos">
+          <input matInput formControlName="last_name">
         </mat-form-field>
       </div>
       <div class="form-row">
         <mat-form-field appearance="outline" class="half">
           <mat-label>Teléfono</mat-label>
-          <input matInput formControlName="telefono">
+          <input matInput formControlName="phone">
         </mat-form-field>
         <mat-form-field appearance="outline" class="half">
           <mat-label>Email</mat-label>
@@ -56,29 +56,29 @@ import { PoliticaPrivacidadDialogComponent } from '../rgpd/rgpd.components';
       <div class="form-row">
         <mat-form-field appearance="outline" class="half">
           <mat-label>Fecha de nacimiento</mat-label>
-          <input matInput formControlName="fecha_nacimiento" type="date">
+          <input matInput formControlName="birth_date" type="date">
         </mat-form-field>
         <mat-form-field appearance="outline" class="half">
           <mat-label>Fecha de alta</mat-label>
-          <input matInput formControlName="fecha_alta" type="date">
+          <input matInput formControlName="registration_date" type="date">
         </mat-form-field>
       </div>
       <div class="seccion-titulo">Diagnóstico inicial (opcional)</div>
       <mat-form-field appearance="outline" class="full">
         <mat-label>Descripción del diagnóstico</mat-label>
-        <textarea matInput formControlName="descripcion" rows="2"></textarea>
+        <textarea matInput formControlName="description" rows="2"></textarea>
       </mat-form-field>
       <div class="form-row">
         <mat-form-field appearance="outline" class="half">
           <mat-label>Patología</mat-label>
-          <input matInput formControlName="patologia">
+          <input matInput formControlName="pathology">
         </mat-form-field>
         <mat-form-field appearance="outline" class="half">
           <mat-label>Estado</mat-label>
-          <mat-select formControlName="estado">
-            <mat-option value="activo">Activo</mat-option>
-            <mat-option value="en seguimiento">En seguimiento</mat-option>
-            <mat-option value="resuelto">Resuelto</mat-option>
+          <mat-select formControlName="status">
+            <mat-option value="active">Activo</mat-option>
+            <mat-option value="in_progress">En seguimiento</mat-option>
+            <mat-option value="resolved">Resuelto</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -119,15 +119,15 @@ export class NuevoPacienteDialogComponent {
   private dialog    = inject(MatDialog);
 
   form = this.fb.group({
-    nombre:              ['', Validators.required],
-    apellidos:           [''],
-    telefono:            [''],
+    name:                ['', Validators.required],
+    last_name:           [''],
+    phone:               [''],
     email:               [''],
-    fecha_nacimiento:    [''],
-    fecha_alta:          [new Date().toISOString().slice(0, 10)],
-    descripcion:         [''],
-    patologia:           [''],
-    estado:              ['activo'],
+    birth_date:          [''],
+    registration_date:   [new Date().toISOString().slice(0, 10)],
+    description:         [''],
+    pathology:           [''],
+    status:              ['active'],
     consentimiento_rgpd: [false, Validators.requiredTrue]
   });
 
@@ -146,7 +146,7 @@ export class NuevoPacienteDialogComponent {
 // ─── Dialog: Editar Paciente ───────────────────────────────────────────────────
 
 @Component({
-  selector: 'app-editar-paciente-dialog',
+  selector: 'app-edit-patient-dialog',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule,
             MatButtonModule, MatDialogModule, MatIconModule],
@@ -161,17 +161,17 @@ export class NuevoPacienteDialogComponent {
       <div class="form-row">
         <mat-form-field appearance="outline" class="half">
           <mat-label>Nombre *</mat-label>
-          <input matInput formControlName="nombre">
+          <input matInput formControlName="name">
         </mat-form-field>
         <mat-form-field appearance="outline" class="half">
           <mat-label>Apellidos</mat-label>
-          <input matInput formControlName="apellidos">
+          <input matInput formControlName="last_name">
         </mat-form-field>
       </div>
       <div class="form-row">
         <mat-form-field appearance="outline" class="half">
           <mat-label>Teléfono</mat-label>
-          <input matInput formControlName="telefono">
+          <input matInput formControlName="phone">
         </mat-form-field>
         <mat-form-field appearance="outline" class="half">
           <mat-label>Email</mat-label>
@@ -182,24 +182,24 @@ export class NuevoPacienteDialogComponent {
       <div class="form-row">
         <mat-form-field appearance="outline" class="half">
           <mat-label>Patología</mat-label>
-          <input matInput formControlName="patologia">
+          <input matInput formControlName="pathology">
         </mat-form-field>
         <mat-form-field appearance="outline" class="half">
           <mat-label>Diagnóstico</mat-label>
-          <input matInput formControlName="diagnostico">
+          <input matInput formControlName="diagnosis_text">
         </mat-form-field>
       </div>
       <mat-form-field appearance="outline" class="full">
         <mat-label>Medicación</mat-label>
-        <input matInput formControlName="medicacion">
+        <input matInput formControlName="medication">
       </mat-form-field>
       <mat-form-field appearance="outline" class="full">
         <mat-label>Contraindicaciones</mat-label>
-        <input matInput formControlName="contraindicaciones">
+        <input matInput formControlName="contraindications">
       </mat-form-field>
       <mat-form-field appearance="outline" class="full">
         <mat-label>Observaciones</mat-label>
-        <textarea matInput formControlName="observaciones" rows="2"></textarea>
+        <textarea matInput formControlName="observations" rows="2"></textarea>
       </mat-form-field>
     </form>
   </mat-dialog-content>
@@ -223,15 +223,15 @@ export class EditarPacienteDialogComponent {
   data              = inject(MAT_DIALOG_DATA);
 
   form = this.fb.group({
-    nombre:            [this.data.nombre ?? '', Validators.required],
-    apellidos:         [this.data.apellidos ?? ''],
-    telefono:          [this.data.telefono ?? ''],
-    email:             [this.data.email ?? ''],
-    patologia:         [this.data.patologia ?? ''],
-    diagnostico:       [this.data.diagnostico ?? ''],
-    medicacion:        [this.data.medicacion ?? ''],
-    contraindicaciones:[this.data.contraindicaciones ?? ''],
-    observaciones:     [this.data.observaciones ?? '']
+    name:             [this.data.name ?? '', Validators.required],
+    last_name:        [this.data.last_name ?? ''],
+    phone:            [this.data.phone ?? ''],
+    email:            [this.data.email ?? ''],
+    pathology:        [this.data.pathology ?? ''],
+    diagnosis_text:   [this.data.diagnosis_text ?? ''],
+    medication:       [this.data.medication ?? ''],
+    contraindications:[this.data.contraindications ?? ''],
+    observations:     [this.data.observations ?? '']
   });
 
   cancelar(): void { this.dialogRef.close(null); }
@@ -244,7 +244,7 @@ export class EditarPacienteDialogComponent {
 // ─── Dialog: Confirmar eliminación ────────────────────────────────────────────
 
 @Component({
-  selector: 'app-confirmar-eliminar-dialog',
+  selector: 'app-confirm-delete-dialog',
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatDialogModule, MatIconModule],
   template: `
@@ -271,7 +271,7 @@ export class ConfirmarEliminarDialogComponent {}
 // ─── Componente principal: Gestión de pacientes ────────────────────────────────
 
 @Component({
-  selector: 'app-gestion-pacientes',
+  selector: 'app-patient-management',
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule,
@@ -316,13 +316,13 @@ export class ConfirmarEliminarDialogComponent {}
       <table mat-table [dataSource]="dataSource" matSort class="pacientes-table">
 
         <!-- Avatar + Nombre -->
-        <ng-container matColumnDef="nombre">
+        <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Paciente</th>
           <td mat-cell *matCellDef="let p">
             <div class="pac-cell">
-              <div class="pac-avatar">{{ (p.nombre?.charAt(0) ?? '') + (p.apellidos?.charAt(0) ?? '') | uppercase }}</div>
+              <div class="pac-avatar">{{ (p.name?.charAt(0) ?? '') + (p.last_name?.charAt(0) ?? '') | uppercase }}</div>
               <div>
-                <div class="pac-nombre">{{ p.nombre }} {{ p.apellidos }}</div>
+                <div class="pac-nombre">{{ p.name }} {{ p.last_name }}</div>
                 <div class="pac-email">{{ p.email }}</div>
               </div>
             </div>
@@ -330,35 +330,35 @@ export class ConfirmarEliminarDialogComponent {}
         </ng-container>
 
         <!-- Teléfono -->
-        <ng-container matColumnDef="telefono">
+        <ng-container matColumnDef="phone">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Teléfono</th>
           <td mat-cell *matCellDef="let p">
-            <span class="pac-tel"><mat-icon style="font-size:14px;vertical-align:middle;color:#78909c">phone</mat-icon> {{ p.telefono || '—' }}</span>
+            <span class="pac-tel"><mat-icon style="font-size:14px;vertical-align:middle;color:#78909c">phone</mat-icon> {{ p.phone || '—' }}</span>
           </td>
         </ng-container>
 
         <!-- Patología -->
-        <ng-container matColumnDef="patologia">
+        <ng-container matColumnDef="pathology">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Patología</th>
           <td mat-cell *matCellDef="let p">
-            <span class="chip-patologia" *ngIf="p.patologia; else sinPatologia">{{ p.patologia }}</span>
+            <span class="chip-patologia" *ngIf="p.pathology; else sinPatologia">{{ p.pathology }}</span>
             <ng-template #sinPatologia><span class="sin-dato">—</span></ng-template>
           </td>
         </ng-container>
 
         <!-- Fecha alta -->
-        <ng-container matColumnDef="fecha_alta">
+        <ng-container matColumnDef="registration_date">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Alta</th>
           <td mat-cell *matCellDef="let p">
-            <span class="pac-fecha">{{ p.fecha_alta || '—' }}</span>
+            <span class="pac-fecha">{{ p.registration_date || '—' }}</span>
           </td>
         </ng-container>
 
         <!-- Sesiones -->
-        <ng-container matColumnDef="sesiones">
+        <ng-container matColumnDef="sessions">
           <th mat-header-cell *matHeaderCellDef>Sesiones</th>
           <td mat-cell *matCellDef="let p">
-            <span class="badge-sesiones" [class.badge-zero]="!p.sesiones">{{ p.sesiones ?? 0 }}</span>
+            <span class="badge-sesiones" [class.badge-zero]="!p.sessions">{{ p.sessions ?? 0 }}</span>
           </td>
         </ng-container>
 
@@ -394,7 +394,7 @@ export class ConfirmarEliminarDialogComponent {}
 
   </div>
   `,
-  styleUrls: ['./gestion-pacientes.component.css']
+  styleUrls: ['./patient-management.component.css']
 })
 export class GestionPacientesComponent implements OnInit {
   private api    = inject(ApiService);
@@ -406,7 +406,7 @@ export class GestionPacientesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   dataSource = new MatTableDataSource<any>([]);
-  displayedColumns = ['nombre', 'telefono', 'patologia', 'fecha_alta', 'sesiones', 'acciones'];
+  displayedColumns = ['name', 'phone', 'pathology', 'registration_date', 'sessions', 'acciones'];
 
   ngOnInit(): void {
     this.loadPacientes();
@@ -417,26 +417,26 @@ export class GestionPacientesComponent implements OnInit {
   loadPacientes(): void {
     this.api.buscarPacientes('').subscribe((pac: any[]) => {
       const rows = pac.map(p => ({
-        id: p.id, nombre: p.nombre, apellidos: p.apellidos,
-        telefono: p.telefono, email: p.email,
-        fecha_alta: p.fecha_alta ?? '', patologia: '', sesiones: 0,
-        diagnostico: '', medicacion: '', contraindicaciones: '', observaciones: ''
+        id: p.id, name: p.name, last_name: p.last_name,
+        phone: p.phone, email: p.email,
+        registration_date: p.registration_date ?? '', pathology: '', sessions: 0,
+        diagnosis_text: '', medication: '', contraindications: '', observations: ''
       }));
       this.dataSource.data = rows;
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
       this.dataSource.filterPredicate = (data, filter) =>
-        `${data.nombre} ${data.apellidos} ${data.email} ${data.patologia}`.toLowerCase().includes(filter);
+        `${data.name} ${data.last_name} ${data.email} ${data.pathology}`.toLowerCase().includes(filter);
       this.cdr.detectChanges();
 
       rows.forEach((p, idx) => {
         this.api.obtenerPaciente(p.id).subscribe((full: any) => {
-          rows[idx].patologia        = full?.ficha?.patologia ?? '';
-          rows[idx].diagnostico      = full?.ficha?.diagnostico ?? '';
-          rows[idx].medicacion       = full?.ficha?.medicacion ?? '';
-          rows[idx].contraindicaciones = full?.ficha?.contraindicaciones ?? '';
-          rows[idx].observaciones    = full?.ficha?.observaciones ?? '';
-          rows[idx].sesiones         = full?.sesiones?.length ?? 0;
+          rows[idx].pathology        = full?.clinical_record?.pathology ?? '';
+          rows[idx].diagnosis_text   = full?.clinical_record?.diagnosis_text ?? '';
+          rows[idx].medication       = full?.clinical_record?.medication ?? '';
+          rows[idx].contraindications = full?.clinical_record?.contraindications ?? '';
+          rows[idx].observations     = full?.clinical_record?.observations ?? '';
+          rows[idx].sessions         = full?.sessions?.length ?? 0;
           this.dataSource.data = [...rows];
           this.cdr.detectChanges();
         });
@@ -456,16 +456,16 @@ export class GestionPacientesComponent implements OnInit {
       .afterClosed().subscribe((datos: any) => {
         if (!datos) return;
         this.api.crearPaciente({
-          nombre: datos.nombre, apellidos: datos.apellidos,
-          telefono: datos.telefono, email: datos.email,
-          fecha_nacimiento: datos.fecha_nacimiento, fecha_alta: datos.fecha_alta
+          name: datos.name, last_name: datos.last_name,
+          phone: datos.phone, email: datos.email,
+          birth_date: datos.birth_date, registration_date: datos.registration_date
         }).subscribe((res: any) => {
-          if (res?.id && datos.descripcion?.trim()) {
+          if (res?.id && datos.description?.trim()) {
             this.api.añadirDiagnostico(res.id, {
-              fecha: new Date().toISOString().slice(0, 10),
-              descripcion: datos.descripcion,
-              patologia: datos.patologia,
-              estado: datos.estado ?? 'activo'
+              date: new Date().toISOString().slice(0, 10),
+              description: datos.description,
+              pathology: datos.pathology,
+              status: datos.status ?? 'active'
             }).subscribe(() => this.loadPacientes());
           } else {
             this.loadPacientes();
@@ -481,13 +481,13 @@ export class GestionPacientesComponent implements OnInit {
       .afterClosed().subscribe((v: any) => {
         if (!v) return;
         this.api.actualizarPaciente(p.id, {
-          nombre: v.nombre, apellidos: v.apellidos,
-          telefono: v.telefono, email: v.email
+          name: v.name, last_name: v.last_name,
+          phone: v.phone, email: v.email
         }).subscribe(() => {
           this.api.actualizarFicha(p.id, {
-            diagnostico: v.diagnostico, patologia: v.patologia,
-            medicacion: v.medicacion, contraindicaciones: v.contraindicaciones,
-            observaciones: v.observaciones
+            diagnosis_text: v.diagnosis_text, pathology: v.pathology,
+            medication: v.medication, contraindications: v.contraindications,
+            observations: v.observations
           }).subscribe(() => this.loadPacientes());
         });
       });
